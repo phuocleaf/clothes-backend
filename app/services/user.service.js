@@ -18,23 +18,20 @@ class UserService {
     async signUp(data) {
         const user = await this.User.findOne({ email: data.email });
         if (user) {
-            return { message: 'Email already exists' };
+            return { message: 'Email already exists', isSignUp: false};
         }
         await this.User.insertOne(data);
-        return { message: 'User created successfully' };
+        return { message: 'User created successfully', isSignUp: true};
         
     }
 
     async signIn(data) {
         const user = await this.User.findOne({ email: data.email, password: data.password });
         if (!user) {
-            return { message: 'Invalid email or password' };
+            return { message: 'Invalid email or password', _id : '', isSignin: false};
         }
-        return { message: 'login successful', _id : user._id};
+        return { message: 'login successful', _id : user._id, isSignin: true};
     }
-
-   
-   
 
 }
 
