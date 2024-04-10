@@ -28,9 +28,9 @@ class UserService {
     async signIn(data) {
         const user = await this.User.findOne({ email: data.email, password: data.password });
         if (!user) {
-            return { message: 'Invalid email or password', _id : '', isSignin: false};
+            return { message: 'Invalid email or password', _id : '', isSignIn: false, name: ''};
         }
-        return { message: 'login successful', _id : user._id, isSignin: true};
+        return { message: 'login successful', _id : user._id, isSignIn: true, name: user.name};
     }
 
 }
