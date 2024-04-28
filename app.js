@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const usersRouter = require("./app/routes/user.route");
 const productsRouter = require("./app/routes/product.route");
+const adminsRouter = require("./app/routes/admin.route");
+const ordersRouter = require("./app/routes/order.route");
 
 const ApiError = require('./app/api-error');
 
@@ -18,8 +20,10 @@ app.get('/', (req, res) => {
   res.json({message: 'welcome to clothes application'})
 });
 
+app.use('/api/admins', adminsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/products',productsRouter );
+app.use('/api/orders', ordersRouter);
 
 //get image /image/imagename
 app.use('/api/image', express.static('uploads'));

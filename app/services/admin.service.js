@@ -1,8 +1,8 @@
 const { ObjectId } = require('mongodb');
 
-class UserService {
+class AdminService {
     constructor(client) {
-        this.User = client.db().collection('users');
+        this.User = client.db().collection('admins');
     }
         // name
         // "Nguyen Tan Phuoc"
@@ -33,12 +33,8 @@ class UserService {
         return { message: 'login successful', _id : user._id, isSignIn: true, name: user.name};
     }
 
-    async getUserWithId(id) {
-        const user = await this.User.findOne({ _id: ObjectId.isValid(id) ? new ObjectId(id) : null });
-        return user;
-    }
-
-
 }
 
-module.exports = UserService;
+
+
+module.exports = AdminService;

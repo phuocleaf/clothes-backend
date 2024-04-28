@@ -1,5 +1,5 @@
 const ApiError = require("../api-error");
-const UserService = require("../services/user.service");
+const AdminService = require("../services/admin.service");
 const MongoDB = require("../utils/mongodb.util");
 
 exports.signUp = async (req, res, next) => {
@@ -8,7 +8,7 @@ exports.signUp = async (req, res, next) => {
     }
 
     try {
-        const user = new UserService(MongoDB.client)
+        const user = new AdminService(MongoDB.client)
         const result = await user.signUp(req.body);
         res.send(result);   
     } catch (error) {
@@ -22,7 +22,7 @@ exports.signIn = async (req, res, next) => {
     }
 
     try {
-        const user = new UserService(MongoDB.client)
+        const user = new AdminService(MongoDB.client)
         const result = await user.signIn(req.body);
         res.send(result);
     } catch (error) {
@@ -32,14 +32,4 @@ exports.signIn = async (req, res, next) => {
 
 exports.home = (req, res) => {
     res.send({message: 'welcome to clothes application'});
-}
-
-exports.getUserWithId = async (req, res, next) => {
-    try {
-        const user = new UserService(MongoDB.client)
-        const result = await user.getUserWithId(req.params.id);
-        res.send(result);
-    } catch (error) {
-        next(new ApiError(500, error.message));
-    }
 }

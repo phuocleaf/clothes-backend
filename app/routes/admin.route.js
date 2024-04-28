@@ -1,5 +1,5 @@
 const express = require('express');
-const user = require('../controllers/user.controller')
+const user = require('../controllers/admin.controller')
 
 const router = express.Router();
 
@@ -11,8 +11,5 @@ router.route('/sign-in')
 
 router.route('/home')
     .get(user.home);
-
-router.route('/get-user/:id')
-    .get(user.getUserWithId);
 
 module.exports = router;

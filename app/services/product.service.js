@@ -82,6 +82,19 @@ class ProductService {
     async deleteProduct(id) {
         return await this.Product.deleteOne({ _id: ObjectId.isValid(id) ? new ObjectId(id) : null });
     }
+
+    async updateProductQuantity(id, size, quantity){
+        const sizeQuantityUpdate = {};
+        sizeQuantityUpdate[`size_${size.toLowerCase()}`] = -quantity;
+    
+        const result = await this.Product.updateOne(
+            { _id: id },
+            { $inc: sizeQuantityUpdate }
+        );
+    
+        return result;
+    }
+    
 }
 
 
