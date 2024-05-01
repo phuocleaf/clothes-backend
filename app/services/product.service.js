@@ -29,7 +29,7 @@ class ProductService {
     }
 
     async getProducts() {
-        return await this.Product.find({}).toArray();
+        return await this.Product.find({}).sort({_id: -1}).toArray();
     }
 
     async getProductWithId(id) {

@@ -55,9 +55,51 @@ exports.updateOrderStatus = async (req, res, next) => {
 exports.getOrderListUsingUserId = async (req, res, next) => {
     try {
         const order = new OrderService(MongoDB.client)
-        const result = await order.getOrderListUsingUserId(req.params.id);
+        const result = await order.getOrderListUsingUserId(req.params.id, req.params.status);
         res.send(result);
     } catch (error) {
         next(new ApiError(500, error.message));
     }
 }
+
+exports.getOrderCartListUsingOrderId = async (req, res, next) => {
+    try {
+        const order = new OrderService(MongoDB.client)
+        const result = await order.getOrderCartListUsingOrderId(req.params.id);
+        res.send(result);
+    } catch (error) {
+        next(new ApiError(500, error.message));
+    }
+}
+
+exports.getOrderTotal = async (req, res, next) => {
+    try {
+        const order = new OrderService(MongoDB.client)
+        const result = await order.getOrderTotalInMonth();
+        res.send(result);
+    } catch (error) {
+        next(new ApiError(500, error.message));
+    }
+}
+
+exports.getOrdersInMonth = async (req, res, next) => {
+    try {
+        const order = new OrderService(MongoDB.client)
+        const result = await order.getOrdersInMonth();
+        res.send(result);
+    } catch (error) {
+        next(new ApiError(500, error.message));
+    }
+}
+
+exports.getBestSellingProductInMonth = async (req, res, next) => {
+    try {
+        const order = new OrderService(MongoDB.client)
+        const result = await order.getBestSellingProductInMonth();
+        res.send(result);
+    } catch (error) {
+        next(new ApiError(500, error.message));
+    }
+}
+
+

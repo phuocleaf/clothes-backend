@@ -38,6 +38,25 @@ class UserService {
         return user;
     }
 
+    async updateUserInfo(id, payload) {
+        const user = await this.User.findOne({ _id: ObjectId.isValid(id) ? new ObjectId(id) : null });
+        if (!user) {
+            return { message: 'User not found', isUpdate: false };
+        }
+
+        const updateData = {
+            name: payload.name,
+            phone: payload.phone,
+            address: payload.address
+        }
+
+        await this.User.updateOne({ _id: new ObjectId(id) }, { $set: updateData });
+        return { message: 'User updated successfully', isUpdate: true};
+    }
+
+    async getNewestUser() {
+        return await this.User.find().sort({ _id: -1 }).limit(1).toArray();
+    }
 
 }
 

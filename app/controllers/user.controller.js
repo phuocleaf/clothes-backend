@@ -43,3 +43,22 @@ exports.getUserWithId = async (req, res, next) => {
         next(new ApiError(500, error.message));
     }
 }
+exports.updateUserInfo = async (req, res, next) => {
+    try {
+        const user = new UserService(MongoDB.client)
+        const result = await user.updateUserInfo(req.params.id, req.body);
+        res.send(result);
+    } catch (error) {
+        next(new ApiError(500, error.message));
+    }
+}
+
+exports.getNewestUser = async (req, res, next) => {
+    try {
+        const user = new UserService(MongoDB.client)
+        const result = await user.getNewestUser();
+        res.send(result);
+    } catch (error) {
+        next(new ApiError(500, error.message));
+    }
+}

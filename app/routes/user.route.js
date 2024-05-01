@@ -15,4 +15,10 @@ router.route('/home')
 router.route('/get-user/:id')
     .get(user.getUserWithId);
 
+router.route('/update-user/:id')
+    .put(user.updateUserInfo);
+
+router.route('/get-newest-user')
+    .get(user.getNewestUser);
+
 module.exports = router;

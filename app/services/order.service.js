@@ -75,9 +75,12 @@ class OrderService {
         }
     }
 
-    async getOrderListUsingUserId(id) {
-        const result = await this.Order.find({ userId: id }).toArray();
-        if (result) {
+    async getOrderListUsingUserId(id, status) {
+        try {
+            const result = await this.Order.find({ userId: id, status: status })
+                .sort({ created_at: -1 })
+                .toArray();
+    
             const formattedOrders = result.map(order => ({
                 _id: order._id,
                 total: order.total,
@@ -85,11 +88,127 @@ class OrderService {
                 userName: order.userName,
                 userNote: order.userNote,
                 userPhone: order.userPhone,
-                create_at: order.create_at,
+                created_at: order.created_at, 
                 status: order.status
             }));
+    
             return formattedOrders;
-        } else {
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+            return [];
+        }
+    }
+    
+
+    async getOrderCartListUsingOrderId(id) {
+        try {
+            const order = await this.getOrderWithId(id);
+            return order.cartList;
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+            return [];
+        }
+    }
+    
+    async getOrderTotalInMonth() {
+        try {
+            const moment = require('moment');
+            const startOfMonth = moment().startOf('month').format('DD-MM-YYYY HH:mm:ss');
+            const endOfMonth = moment().endOf('month').format('DD-MM-YYYY HH:mm:ss');
+    
+            const result = await this.Order.aggregate([
+                {
+                    $match: {
+                        created_at: {
+                            $gte: startOfMonth,
+                            $lte: endOfMonth
+                        },
+                        status: 'Đã giao'
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: "$total" }
+                    }
+                }
+            ]).toArray();
+    
+            return result;
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+            return [];
+        }
+    }
+
+    async getOrdersInMonth() {
+        try {
+            const moment = require('moment');
+            const startOfMonth = moment().startOf('month').format('DD-MM-YYYY HH:mm:ss');
+            const endOfMonth = moment().endOf('month').format('DD-MM-YYYY HH:mm:ss');
+    
+            const result = await this.Order.aggregate([
+                {
+                    $match: {
+                        created_at: {
+                            $gte: startOfMonth,
+                            $lte: endOfMonth
+                        },
+                        status: 'Đã giao'
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        count: { $sum: 1 }
+                    }
+                }
+            ]).toArray();
+    
+            return result;
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+            return [];
+        }
+    }
+
+    getBestSellingProductInMonth() {
+        try {
+            const moment = require('moment');
+            const startOfMonth = moment().startOf('month').format('DD-MM-YYYY HH:mm:ss');
+            const endOfMonth = moment().endOf('month').format('DD-MM-YYYY HH:mm:ss');
+    
+            const result = this.Order.aggregate([
+                {
+                    $match: {
+                        created_at: {
+                            $gte: startOfMonth,
+                            $lte: endOfMonth
+                        },
+                        status: 'Đã giao'
+                    }
+                },
+                {
+                    $unwind: "$cartList"
+                },
+                {
+                    $group: {
+                        _id: "$cartList._id",
+                        name: { $first: "$cartList.name" },
+                        totalQuantity: { $sum: "$cartList.quantity" }
+                    }
+                },
+                {
+                    $sort: { totalQuantity: -1 }
+                },
+                {
+                    $limit: 1
+                }
+            ]).toArray();
+    
+            return result;
+        } catch (error) {
+            console.error("Error fetching orders:", error);
             return [];
         }
     }
